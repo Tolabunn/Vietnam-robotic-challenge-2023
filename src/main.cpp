@@ -208,32 +208,27 @@ void ps2Control()
   //   right2dc(0,0);
   //   rightdc(0,0);
   // }
-  if(ps2x.Analog(PSS_LY) == 0 && ps2x.Analog(PSS_RY) == 0)
+  if(ps2x.Analog(PSS_LY) == 0)
   {
     forwarddc(0,1000);
+  }
+  else if(ps2x.Analog(PSS_RY) == 0)
+  {
     forward2dc(0,1000);
   }
-  else if(ps2x.Analog(PSS_LY) == 255 && ps2x.Analog(PSS_RY) == 255)
+  else if(ps2x.Analog(PSS_LY) == 255)
   {
     backdc(1000,0);
+  else if(ps2x.Analog(PSS_RY) == 255)
+  {
     back2dc(1000,0);
-  }
-  else if(ps2x.Analog(PSS_LY) == 0 && ps2x.Analog(PSS_RY) == 255)
-  {
-    rightdc(1000,0);
-    right2dc(0,1000);
-  }
-  else if(ps2x.Analog(PSS_LY) == 255 && ps2x.Analog(PSS_RY) == 0)
-  {
-    leftdc(0,1000);
-    left2dc(1000,0);
   }
   else
   {
-    leftdc(0,0);
-    left2dc(0,0);
-    rightdc(0,0);
-    right2dc(0,0);
+    forwarddc(0,0);
+    forward2dc(0,0);
+    backdc(0,0);
+    back2dc(0,0);
   }
 //control servo clockwise and anticlockwise
   if (ps2x.Button(PSB_GREEN))
