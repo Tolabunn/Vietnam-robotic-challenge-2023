@@ -22,6 +22,8 @@
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 PS2X ps2x;
+bool state = false;
+short state1 = 0;
 
 void setup() {
   pwm.begin();
@@ -110,6 +112,28 @@ void back2dc(uint16_t back0, uint16_t back1)
   pwm.setPWM(12,0,back0);
   pwm.setPWM(13,0,back1);
 }
+void eco()
+{
+  forward2dc(0,1000);
+  forwarddc(0,1000);
+  back2dc(1000,0);
+  backdc(1000,0);
+  left2dc(0,1000);
+  leftdc(1000,0);
+  right2dc(1000,0);
+  rightdc(0,1000);
+}
+void sport()
+{
+  forward2dc(0,3000);
+  forwarddc(0,3000);
+  back2dc(3000,0);
+  backdc(3000,0);
+  left2dc(0,3000);
+  leftdc(3000,0);
+  right2dc(3000,0);
+  rightdc(0,3000);
+}
 // shooter and collector setup
 void collector()
 {
@@ -137,54 +161,80 @@ void ps2Control()
   ps2x.read_gamepad(false, false);
   delay(50);
   // control motor with joystick
-  if(ps2x.Analog(PSS_LX) == 0)
+  // if(ps2x.Analog(PSS_LX) == 0)
+  // {
+  //   left2dc(0,1000);
+  //   leftdc(1000,0);
+  // }
+  // else if(ps2x.Analog(PSS_LX) == 255)
+  // {
+  //   right2dc(1000,0);
+  //   rightdc(0,1000);
+  // }
+  // else if(ps2x.Analog(PSS_LY) == 0)
+  // {
+  //   forward2dc(0,1000);
+  //   forwarddc(0,1000);
+  // }
+  // else if(ps2x.Analog(PSS_LY) == 255)
+  // {
+  //   back2dc(1000,0);
+  //   backdc(1000,0);
+  // }
+  // else if(ps2x.Analog(PSS_RX) == 0)
+  // {
+  //   left2dc(0,3000);
+  //   leftdc(3000,0);
+  // }
+  // else if(ps2x.Analog(PSS_RX) == 255)
+  // {
+  //   right2dc(3000,0);
+  //   rightdc(0,3000);
+  // }
+  // else if(ps2x.Analog(PSS_RY) == 0)
+  // {
+  //   forward2dc(0,3000);
+  //   forwarddc(0,3000);
+  // }
+  // else if(ps2x.Analog(PSS_RY) == 255)
+  // {
+  //   back2dc(3000,0);
+  //   backdc(3000,0);
+  // }
+  // else
+  // {
+  //   left2dc(0,0);
+  //   leftdc(0,0);
+  //   right2dc(0,0);
+  //   rightdc(0,0);
+  // }
+  if(ps2x.Analog(PSS_LY) == 0 && ps2x.Analog(PSS_RY) == 0)
   {
-    left2dc(0,1000);
-    leftdc(1000,0);
-  }
-  else if(ps2x.Analog(PSS_LX) == 255)
-  {
-    right2dc(1000,0);
-    rightdc(0,1000);
-  }
-  else if(ps2x.Analog(PSS_LY) == 0)
-  {
-    forward2dc(0,1000);
     forwarddc(0,1000);
+    forward2dc(0,1000);
   }
-  else if(ps2x.Analog(PSS_LY) == 255)
+  else if(ps2x.Analog(PSS_LY) == 255 && ps2x.Analog(PSS_RY) == 255)
   {
-    back2dc(1000,0);
     backdc(1000,0);
+    back2dc(1000,0);
   }
-  else if(ps2x.Analog(PSS_RX) == 0)
+  else if(ps2x.Analog(PSS_LY) == 0 && ps2x.Analog(PSS_RY) == 255)
   {
-    left2dc(0,3000);
-    leftdc(3000,0);
+    rightdc(1000,0);
+    right2dc(0,1000);
   }
-  else if(ps2x.Analog(PSS_RX) == 255)
+  else if(ps2x.Analog(PSS_LY) == 255 && ps2x.Analog(PSS_RY) == 0)
   {
-    right2dc(3000,0);
-    rightdc(0,3000);
-  }
-  else if(ps2x.Analog(PSS_RY) == 0)
-  {
-    forward2dc(0,3000);
-    forwarddc(0,3000);
-  }
-  else if(ps2x.Analog(PSS_RY) == 255)
-  {
-    back2dc(3000,0);
-    backdc(3000,0);
+    leftdc(0,1000);
+    left2dc(1000,0);
   }
   else
   {
-    left2dc(0,0);
     leftdc(0,0);
-    right2dc(0,0);
+    left2dc(0,0);
     rightdc(0,0);
+    right2dc(0,0);
   }
-  
 //control servo clockwise and anticlockwise
   if (ps2x.Button(PSB_GREEN))
   {
@@ -218,6 +268,33 @@ void ps2Control()
   {
     collector_stop();
   }
+  
+  if (ps2x.Button(PSB_PAD_UP))
+  {
+    state = !state;
+  }
+  if (state)
+  {
+    shooter();
+  }
+  else
+  {
+    shooter_stop();
+  }
+  // if(ps2x.Button(PSB_CIRCLE))
+  // {
+  //   switch(state1 % 3 + 1)
+  //   {
+  //     case (0):
+  //       shooter();
+  //     case (1):
+  //       shooter_stop();
+  //     case (2):
+  //       collector();
+  //       break;
+  //   }
+  // }
+
 }
 void loop() {
   ps2Control();
