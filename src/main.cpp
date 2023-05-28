@@ -204,7 +204,7 @@ void ps2Control()
     rightdc(0,0);
     right2dc(0,0);
   }
-//control servo clockwise and anticlockwise
+//control servo 360 clockwise and anticlockwise 
   if(ps2x.Button(PSB_PAD_UP))
   {
     state1++;
@@ -221,6 +221,7 @@ void ps2Control()
     servo_anticlockwise();
     break;
   }
+// control servo 360 (2) clockwise and anticlockwise
 
 //shooting motor
   if(ps2x.Button(PSB_R1))
@@ -240,7 +241,19 @@ void ps2Control()
   {
     collector_stop();
   }
-
+// motor mode controller
+  if(ps2x.ButtonPressed(PSB_TRIANGLE))
+  {
+    state =!state;
+  }
+  if(state)
+  {
+    eco();
+  }
+  else
+  {
+    sport();
+  }
   delay(50);
 }
 void loop() {
