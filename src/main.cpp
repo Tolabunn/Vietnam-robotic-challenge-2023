@@ -137,13 +137,18 @@ void sport()
 // shooter and collector setup
 void collector()
 {
-  pwm.setPWM(8,0,4095);
-  pwm.setPWM(9,0,0);
+  pwm.setPWM(12,0,3000);
+  pwm.setPWM(13,0,0);
 }
-void collector_stop()
+void reversedirect()
 {
-  pwm.setPWM(8,0,0);
-  pwm.setPWM(9,0,0);
+  pwm.setPWM(12,0,0);
+  pwm.setPWM(13,0,3000);
+}
+void collector_stop() 
+{
+  pwm.setPWM(12,0,0);
+  pwm.setPWM(13,0,0);
 }
 void shooter()
 {
@@ -232,14 +237,21 @@ void ps2Control()
   {
     shooter_stop();
   }
-//ball collector motor
-  if(ps2x.Button(PSB_L1))
+//ball collector and reverse motor
+  if (ps2x.ButtonPressed(PSB_L1)) 
   {
-    collector();
+    state++;
   }
-  if(ps2x.Button(PSB_L2))
-  {
-    collector_stop();
+  switch (state % 3) {
+    case(1):
+      collector();
+      break;
+    case(2):
+      reversedirect();
+      break;
+    case(0):
+      collector_stop();
+      break;
   }
 // motor mode controller
   if(ps2x.ButtonPressed(PSB_TRIANGLE))
